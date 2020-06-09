@@ -63,6 +63,14 @@ func (ll *linkedList) insert(index int, value interface{}) {
 	node.next = newNode
 }
 
+func (ll *linkedList) remove(index int) {
+	head := ll.head
+	for i := 0; i < index-1; i++ {
+		head = head.next
+	}
+	head.next = head.next.next
+}
+
 func main() {
 	list := new(10)
 	list.append(30)
@@ -70,6 +78,8 @@ func main() {
 	list.insert(2, 15)
 	list.insert(3, 20)
 	list.insert(4, 25)
+	list.remove(4)
+	list.remove(2)
 	// 5 10 15 20 25 30
 	list.print()
 }
