@@ -9,77 +9,94 @@ type node struct {
 }
 
 type linkedList struct {
-	head *node
-	tail *node
+	head   *node
+	tail   *node
+	length int
 }
 
 func new(value interface{}) linkedList {
 	ll := linkedList{
-		head: &node{
-			value: value,
-			prev:  nil,
-			next:  nil,
-		},
+		head: newNode(value),
 	}
 	ll.tail = ll.head
+	ll.length = 1
 	return ll
-}
-
-func (ll *linkedList) print() {
-	current := ll.head
-	for current != nil {
-		fmt.Println(current.value)
-		current = current.next
-	}
-}
-
-func (ll *linkedList) append(value interface{}) {
-	node := newNode(value)
-	ll.tail.next = node
-	ll.tail = node
-}
-
-func (ll *linkedList) prepend(value interface{}) {
-	node := newNode(value)
-	node.next = ll.head
-	ll.head = node
 }
 
 func newNode(value interface{}) *node {
 	return &node{
-		prev:  nil,
 		next:  nil,
+		prev:  nil,
 		value: value,
 	}
 }
 
-func (ll *linkedList) insert(index int, value interface{}) {
+func (ll *linkedList) append(value interface{}) {
 	newNode := newNode(value)
-	node := ll.head
-	for i := 0; i < index-1; i++ {
-		node = node.next
+	newNode.prev = ll.head
+	ll.tail = newNode
+	ll.head.next = newNode
+	ll.length++
+}
+
+func (ll *linkedList) prepend(value interface{}) {
+	newNode := newNode(value)
+	newNode.next = ll.head
+	ll.head = newNode
+	ll.length++
+
+}
+
+func (ll *linkedList) insert(index int, value interface{}) {
+	if index == 0 {
+		ll.prepend(value)
+		return
 	}
-	newNode.next = node.next
-	node.next = newNode
+	newNode := newNode(value)
+	previousNode := ll.traverse(index - 1)
+	newNode.prev = previousNode
+	newNode.next = previousNode.next
+	previousNode.next = newNode
 }
 
 func (ll *linkedList) remove(index int) {
+	previousNode := ll.traverse(index - 1)
+	previousNode.next = previousNode.next.next
+}
+
+func (ll *linkedList) traverse(index int) *node {
+
 	head := ll.head
-	for i := 0; i < index-1; i++ {
+	if index >= ll.length {
+		index = ll.length - 1
+	}
+	for i := 0; i < index; i++ {
 		head = head.next
 	}
-	head.next = head.next.next
+
+	return head
+}
+
+func (ll *linkedList) print() {
+
+	head := ll.head
+	if ll.length == 1 {
+		fmt.Println(head.value)
+		return
+	}
+	for head != nil {
+		fmt.Println(head.value)
+		head = head.next
+	}
 }
 
 func main() {
-	list := new(10)
-	list.append(30)
-	list.prepend(5)
-	list.insert(2, 15)
-	list.insert(3, 20)
-	list.insert(4, 25)
-	list.remove(4)
-	list.remove(2)
-	// 5 10 15 20 25 30
-	list.print()
+	myll := new(10)
+	myll.append(15)
+	myll.prepend(5)
+	myll.insert(1, 22)
+	myll.insert(0, 99)
+	myll.print()
+	myll.remove(1)
+	myll.print()
 }
