@@ -113,19 +113,10 @@ func main() {
 	myList.insert(1, 10)
 	myList.insert(2, 15)
 	myList.insert(4, 25)
-	//	myList.insert(3, 55)
-	//myList.insert(0, 0)
-	// myList.insert(5, 16)
-	// myList.insert(6, 17)
-	//myList.remove(3)
 	myList.print()
 
 	fmt.Println("reverse")
 	myList.reverse()
 	myList.print()
 
-	str1 := "c"
-	str2 := "b"
-
-	fmt.Println(str1 > str2)
 }
