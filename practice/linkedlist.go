@@ -14,12 +14,12 @@ type linkedList struct {
 	length int
 }
 
-func new(value interface{}) linkedList {
+func newList(value interface{}) linkedList {
 	ll := linkedList{
-		head: newNode(value),
+		head:   newNode(value),
+		length: 1,
 	}
 	ll.tail = ll.head
-	ll.length = 1
 	return ll
 }
 
@@ -31,20 +31,39 @@ func newNode(value interface{}) *node {
 	}
 }
 
-func (ll *linkedList) append(value interface{}) {
-	newNode := newNode(value)
-	newNode.prev = ll.head
-	ll.tail = newNode
-	ll.head.next = newNode
-	ll.length++
-}
-
 func (ll *linkedList) prepend(value interface{}) {
 	newNode := newNode(value)
 	newNode.next = ll.head
+	ll.head.prev = newNode
 	ll.head = newNode
 	ll.length++
 
+}
+func (ll *linkedList) append(value interface{}) {
+	newNode := newNode(value)
+	newNode.prev = ll.tail
+	ll.tail.next = newNode
+	ll.tail = newNode
+	ll.length++
+}
+
+func (ll *linkedList) print() {
+	head := ll.head
+	for head != nil {
+		fmt.Println(head.value, "--> ", "prev: ", head.prev, "next: ", head.next)
+		head = head.next
+	}
+}
+
+func (ll *linkedList) traverse(index int) *node {
+	node := ll.head
+	if index >= ll.length {
+		index = ll.length - 1
+	}
+	for i := 0; i < index; i++ {
+		node = node.next
+	}
+	return node
 }
 
 func (ll *linkedList) insert(index int, value interface{}) {
@@ -56,47 +75,57 @@ func (ll *linkedList) insert(index int, value interface{}) {
 	previousNode := ll.traverse(index - 1)
 	newNode.prev = previousNode
 	newNode.next = previousNode.next
+	previousNode.next.prev = newNode
 	previousNode.next = newNode
+	ll.length++
 }
 
 func (ll *linkedList) remove(index int) {
 	previousNode := ll.traverse(index - 1)
+	previousNode.next.next.prev = previousNode
 	previousNode.next = previousNode.next.next
+	//previousNode.next.prev = previousNode
+	ll.length--
 }
 
-func (ll *linkedList) traverse(index int) *node {
+func (ll *linkedList) reverse() {
+	if ll.length > 1 {
+		first := ll.head
+		second := first.next
 
-	head := ll.head
-	if index >= ll.length {
-		index = ll.length - 1
-	}
-	for i := 0; i < index; i++ {
-		head = head.next
-	}
+		for second != nil {
+			temp := second.next
+			second.prev = second.next
+			second.next = first
+			first = second
+			second = temp
+		}
+		ll.head.next = nil
+		ll.head = first
 
-	return head
-}
-
-func (ll *linkedList) print() {
-
-	head := ll.head
-	if ll.length == 1 {
-		fmt.Println(head.value)
-		return
-	}
-	for head != nil {
-		fmt.Println(head.value)
-		head = head.next
 	}
 }
 
 func main() {
-	myll := new(10)
-	myll.append(15)
-	myll.prepend(5)
-	myll.insert(1, 22)
-	myll.insert(0, 99)
-	myll.print()
-	myll.remove(1)
-	myll.print()
+	myList := newList(20)
+	myList.prepend(5)
+	myList.append(30)
+	myList.insert(1, 10)
+	myList.insert(2, 15)
+	myList.insert(4, 25)
+	//	myList.insert(3, 55)
+	//myList.insert(0, 0)
+	// myList.insert(5, 16)
+	// myList.insert(6, 17)
+	//myList.remove(3)
+	myList.print()
+
+	fmt.Println("reverse")
+	myList.reverse()
+	myList.print()
+
+	str1 := "c"
+	str2 := "b"
+
+	fmt.Println(str1 > str2)
 }
