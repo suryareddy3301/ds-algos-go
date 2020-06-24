@@ -2,54 +2,51 @@ package main
 
 import "fmt"
 
+//push pop peek
+
 type node struct {
 	value interface{}
 	next  *node
 }
 
-type stack struct {
-	top *node
+type linkedListStack struct {
+	top    *node
+	length int
 }
 
 func newNode(value interface{}) *node {
 	return &node{
 		value: value,
-		next:  nil,
 	}
 }
 
-func newStack(value interface{}) stack {
-	return stack{
-		top: newNode(value),
+func newLinkedListStack(value interface{}) linkedListStack {
+	node := newNode(value)
+	stack := linkedListStack{
+		top:    node,
+		length: 1,
 	}
+	return stack
 }
 
-func (s *stack) push(value interface{}) {
+func (s *linkedListStack) push(value interface{}) {
 	newNode := newNode(value)
 	newNode.next = s.top
 	s.top = newNode
 }
 
-func (s *stack) pop() {
+func (s *linkedListStack) pop() {
 	s.top = s.top.next
 }
 
-func (s *stack) print() {
-	node := s.top
-	for node != nil {
-		fmt.Println(node.value)
-		node = node.next
-	}
+func (s *linkedListStack) peek() {
+	fmt.Println("peek:", s.top.value)
 }
 
-func (s *stack) peek() *node {
-	return s.top
-}
-
-func (s *stack) traverse(index int) {
-	current := s.top
-	for i := 0; i < index; i++ {
-		current = current.next
+func (s *linkedListStack) print() {
+	top := s.top
+	for top != nil {
+		fmt.Println(top.value)
+		top = top.next
 	}
-	fmt.Println("value at index ", index, " is: ", current.value)
 }
